@@ -2,31 +2,69 @@
 	<div>
 		<div class="section">
 			<div class="section__container">
-				<h2 class="section__title">URLs</h2>
-				<div v-for="(url, i) in urls" :key="`url-${i}`">
+				<h2 class="section__title">
+					URLs
+					<transition name="fade">
+						<span v-if="downloading" class="section__loading"
+							>Downloading</span
+						>
+					</transition>
+				</h2>
+				<div
+					v-for="(url, i) in urls"
+					:key="`url-${i}`"
+					class="input__container"
+				>
 					<input
 						v-model="url.url"
 						type="url"
 						class="input"
 						placeholder="Enter YouTube URL..."
+						:disabled="downloading"
 						@keydown.enter="addURLInput"
 					/>
+					<span
+						class="input__delete material-icons"
+						@click="deleteURL(i)"
+						>clear</span
+					>
 				</div>
 				<div class="buttons">
-					<button class="button" @click="addURLInput">Add</button>
-					<button class="button" @click="downloadURLs">
-						Download
+					<button
+						class="button"
+						:disabled="downloading"
+						@click="addURLInput"
+					>
+						<span class="material-icons">add</span>
+					</button>
+					<button
+						class="button"
+						:disabled="downloading"
+						@click="downloadURLs"
+					>
+						<span class="material-icons">get_app</span>
+					</button>
+					<button
+						class="button"
+						:disabled="downloading"
+						@click="clearAllURLs"
+					>
+						<span class="material-icons">clear_all</span>
 					</button>
 				</div>
 			</div>
 		</div>
 
 		<div class="section">
-			<div v-if="videos.length > 0" class="section__container">
-				<div class="section__title">Downloaded Videos</div>
-				<div v-for="video in videos" :key="video.title">
-					<VideoInfo :info="video" />
-				</div>
+			<div class="section__container">
+				<transition name="fade">
+					<div v-if="videos.length > 0">
+						<div class="section__title">Downloaded Videos</div>
+						<div v-for="video in videos" :key="video.title">
+							<VideoInfo :info="video" />
+						</div>
+					</div>
+				</transition>
 			</div>
 		</div>
 	</div>
@@ -50,6 +88,13 @@ export default {
 			downloading: false,
 		};
 	},
+	computed: {
+		flatUrls() {
+			return this.urls.map(({ url }) => {
+				return url.split('&')[0];
+			});
+		},
+	},
 	methods: {
 		addURLInput() {
 			this.urls.push({ url: '' });
@@ -60,6 +105,7 @@ export default {
 			if (!hasURLs || this.downloading) return;
 
 			this.downloading = true;
+			this.videos = [];
 			const res = await fetch('/api/download-urls', {
 				method: 'POST',
 				headers: {
@@ -78,12 +124,19 @@ export default {
 			const res = url.match(urlRegex);
 			return res && res.length > 0;
 		},
-	},
-	computed: {
-		flatUrls() {
-			return this.urls.map(({ url }) => {
-				return url.split('&')[0];
-			});
+
+		clearAllURLs() {
+			this.urls = [
+				{
+					url: '',
+				},
+			];
+		},
+
+		deleteURL(i) {
+			if (this.urls.length > 1) {
+				this.urls.splice(i, 1);
+			}
 		},
 	},
 };
@@ -111,13 +164,33 @@ export default {
 	font-weight: normal;
 }
 
+.section__loading {
+	padding-left: 8px;
+	font-size: 12px;
+	font-style: italic;
+}
+
 .input {
 	width: 100%;
-	margin-bottom: 16px;
 	padding: 8px;
 	border: 1px solid grey;
 	border-radius: 4px;
 	font-size: 16px;
+}
+
+.input__container {
+	margin-bottom: 16px;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+}
+
+.input__delete {
+	margin-left: 8px;
+}
+
+.input__delete:hover {
+	cursor: pointer;
 }
 
 .buttons {
@@ -126,8 +199,11 @@ export default {
 }
 
 .button {
-	padding: 8px;
+	padding: 4px 8px;
 	margin-right: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	background: #ff6f00;
 	box-shadow: 0 1px 2px 0 #c43e00;
 	border: none;
@@ -142,5 +218,14 @@ export default {
 
 .button:hover {
 	cursor: pointer;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>
