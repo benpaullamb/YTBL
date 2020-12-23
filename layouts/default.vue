@@ -1,16 +1,16 @@
 <template>
 	<div>
-		<BLHeader />
+		<Header />
 		<Nuxt />
 	</div>
 </template>
 
 <script>
-import BLHeader from '../components/BLHeader.vue';
+import Header from '../components/Header.vue';
 
 export default {
 	components: {
-		BLHeader,
+		Header,
 	},
 };
 </script>

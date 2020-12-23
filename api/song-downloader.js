@@ -9,7 +9,7 @@ async function downloadSongs(urls) {
 		const { stdout: res, stderr: err } = await cmd(
 			`youtube-dl ${urls.join(
 				' '
-			)} --config-location ${configPath} -s --print-json`
+			)} --config-location ${configPath} -s --print-json` // -s
 		);
 		if (err) {
 			return false;

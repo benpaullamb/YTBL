@@ -45,9 +45,16 @@ import LikeBar from './LikeBar.vue';
 // likeCount,
 // dislikeCount,
 export default {
-	props: ['info'],
 	components: {
 		LikeBar,
+	},
+	props: {
+		info: {
+			type: Object,
+			default() {
+				return {};
+			},
+		},
 	},
 	methods: {
 		toYTDate(date) {
