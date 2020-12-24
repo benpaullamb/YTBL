@@ -1,18 +1,20 @@
 <template>
 	<Section title="Downloaded Videos">
-		<div v-if="videos.length > 0">
-			<VideoInfo
-				v-for="video in videos"
-				:key="video.title"
-				:info="video"
-			/>
-		</div>
+		<transition name="fade" mode="out-in">
+			<div v-if="videos.length > 0" key="videos">
+				<VideoInfo
+					v-for="video in videos"
+					:key="video.title"
+					:info="video"
+				/>
+			</div>
 
-		<div v-else>
-			<span class="videos__none"
-				>Your downloaded videos will appear here.</span
-			>
-		</div>
+			<div v-else key="none">
+				<span class="videos__none"
+					>Your downloaded videos will appear here.</span
+				>
+			</div>
+		</transition>
 	</Section>
 </template>
 

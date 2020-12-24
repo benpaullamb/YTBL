@@ -7,10 +7,6 @@ _Made with Nuxt.js, Vue.js, and Express.js_
 ## Backlog
 
 -   Refactor
--   Add a "time elapsed" when downloading
--   Rename button next to URL that fetches video name
--   "Add prefix" button for group renaming
--   Transitions for everything
 -   More backend URL validation
 -   Links section to popular anime OST YT searches
 -   Support for playlists

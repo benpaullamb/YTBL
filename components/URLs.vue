@@ -1,62 +1,105 @@
 <template>
 	<Section title="URLs">
-		<template v-if="downloading" #title-extension>
-			<span class="urls__loading">Downloading</span>
+		<template #title-extension>
+			<transition name="fade">
+				<span v-if="downloading" class="urls__loading"
+					>Downloading - time elapsed: {{ timeElapsed }}s</span
+				>
+			</transition>
 		</template>
-		<div v-for="(url, i) in urls" :key="`url-${i}`" class="urls__urls">
-			<div
-				class="urls__inputs"
-				:style="{
-					'grid-template-columns': url.rename ? '1fr 1fr' : '1fr',
-				}"
-			>
+
+		<div class="urls__group">
+			<transition name="fade" mode="out-in">
+				<span
+					v-if="!usePrefix"
+					key="click-here"
+					class="urls__text"
+					@click="usePrefix = !usePrefix"
+					>Click here to add a prefix to all downloads</span
+				>
+				<span
+					v-else
+					key="prefix"
+					class="urls__text"
+					@click="usePrefix = !usePrefix"
+					>Prefix for all downloads</span
+				>
+			</transition>
+			<transition name="fade">
 				<input
-					v-model="url.url"
-					type="url"
-					class="urls__input"
-					placeholder="Enter YouTube URL..."
-					:disabled="downloading"
-					@keydown.enter="addURLInput"
-				/>
-				<input
-					v-if="url.rename"
-					v-model="url.filename"
+					v-if="usePrefix"
+					v-model="prefix"
 					type="text"
-					class="urls__input"
-					placeholder="Enter a new filename..."
+					class="input"
+					placeholder="Enter a prefix..."
 					:disabled="downloading"
-					@keydown.enter="addURLInput"
 				/>
-			</div>
-			<div class="urls__buttons">
-				<span
-					class="urls__icon material-icons"
-					title="Rename file"
-					@click="url.rename = !url.rename"
-					>edit</span
-				>
-				<span
-					class="urls__icon material-icons"
-					title="Delete URL"
-					@click="deleteURL(i)"
-					>clear</span
-				>
-			</div>
+			</transition>
 		</div>
 
+		<transition-group name="fade" tag="div">
+			<div v-for="(url, i) in urls" :key="`url-${i}`" class="urls__urls">
+				<div
+					class="urls__inputs"
+					:style="{
+						'grid-template-columns': url.rename ? '1fr 1fr' : '1fr',
+					}"
+				>
+					<input
+						v-model="url.url"
+						type="url"
+						class="input"
+						placeholder="Enter YouTube URL..."
+						:disabled="downloading"
+						@keydown.enter="addURLInput"
+					/>
+					<input
+						v-if="url.rename"
+						v-model="url.filename"
+						type="text"
+						class="input"
+						placeholder="Enter a new filename..."
+						:disabled="downloading"
+						@keydown.enter="addURLInput"
+					/>
+				</div>
+				<div class="urls__buttons">
+					<span
+						class="urls__icon material-icons"
+						title="Rename file"
+						@click="url.rename = !url.rename"
+						>edit</span
+					>
+					<span
+						class="urls__icon material-icons"
+						title="Delete URL"
+						@click="deleteURL(i)"
+						>clear</span
+					>
+				</div>
+			</div>
+		</transition-group>
+
 		<div class="buttons">
-			<button class="button" :disabled="downloading" @click="addURLInput">
+			<button
+				class="button"
+				title="Add URL"
+				:disabled="downloading"
+				@click="addURLInput"
+			>
 				<span class="material-icons">add</span>
 			</button>
 			<button
 				class="button"
+				title="Download videos"
 				:disabled="downloading"
-				@click="$emit('download-urls', flatUrls)"
+				@click="downloadURLs"
 			>
 				<span class="material-icons">get_app</span>
 			</button>
 			<button
 				class="button"
+				title="Clear all URLs"
 				:disabled="downloading"
 				@click="clearAllURLs"
 			>
@@ -78,9 +121,15 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		timeElapsed: {
+			type: Number,
+			default: 0,
+		},
 	},
 	data() {
 		return {
+			prefix: '',
+			usePrefix: false,
 			urls: [
 				{
 					url: '',
@@ -89,13 +138,6 @@ export default {
 				},
 			],
 		};
-	},
-	computed: {
-		flatUrls() {
-			return this.urls.map(({ url }) => {
-				return url.split('&')[0];
-			});
-		},
 	},
 	methods: {
 		addURLInput() {
@@ -117,15 +159,48 @@ export default {
 				this.urls.splice(i, 1);
 			}
 		},
+
+		downloadURLs() {
+			const req = { urls: this.urls };
+			if (this.usePrefix) {
+				req.prefix = this.prefix;
+			}
+			this.$emit('download-urls', req);
+		},
 	},
 };
 </script>
 
 <style>
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: all 0.5s;
+}
+
 .urls__loading {
 	padding-left: 8px;
 	font-size: 12px;
 	font-style: italic;
+}
+
+.urls__group {
+	margin-bottom: 16px;
+}
+
+.urls__text {
+	margin-bottom: 8px;
+	display: block;
+	font-size: 14px;
+	font-style: italic;
+}
+
+.urls__text:hover {
+	cursor: pointer;
 }
 
 .urls__urls {

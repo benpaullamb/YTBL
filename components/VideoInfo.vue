@@ -10,7 +10,7 @@
 
 		<div class="video-info__section">
 			<h3 class="video-info__title">
-				<a class="video-info__link" :href="info.url"
+				<a class="video-info__link" :href="info.url" target="_blank"
 					>{{ info.title }} -
 					<span class="video-info__time">{{
 						toDuration(info.duration)

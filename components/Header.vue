@@ -2,7 +2,7 @@
 	<div class="header">
 		<h1 class="header__title">
 			YouTube-BL
-			<span class="header__subtitle">v1.0.0</span>
+			<span class="header__subtitle">v1.1.0</span>
 		</h1>
 	</div>
 </template>
