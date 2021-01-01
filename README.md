@@ -4,8 +4,19 @@ Ben's YouTube Downloader web app for single and batch downloading.
 
 _Made with Nuxt.js, Vue.js, and Express.js_
 
+![Screenshot of YTBL](./static/screenshot.png)
+
 ## Backlog
 
+-   Rename prefix to suffix
+-   Move suffix into options section
+-   Add subfolder to options section
+-   Number URLs
+-   Trim inputs
+-   Save URLs to local storage in case leave page
+-   Anime reskin
+    - Replace header with anime banner
+-   Get progress from youtube-dl and display progress bar
 -   Refactor
 -   More backend URL validation
 -   Links section to popular anime OST YT searches
