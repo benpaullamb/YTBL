@@ -82,11 +82,11 @@ To add
 ## Release History
 
 - v0.2.0
-  - batch filename prefixing
-  - file renaming
-  - download timer
+  - Batch filename prefixing
+  - File renaming
+  - Download timer
 - v0.1.1
-  - url deleting
-  - transitions
+  - Url deleting
+  - Transitions
 - v0.1.0
-  - initial design
+  - Initial design
