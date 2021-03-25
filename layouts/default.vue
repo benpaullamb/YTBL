@@ -1,25 +1,25 @@
 <template>
-	<div>
-		<Header />
-		<Nuxt />
-	</div>
+  <div>
+    <Header />
+    <Nuxt />
+  </div>
 </template>
 
 <script>
 import Header from '../components/Header.vue';
 
 export default {
-	components: {
-		Header,
-	},
+  components: {
+    Header,
+  },
 };
 </script>
 
 <style>
 * {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-	font-family: sans-serif;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
 }
 </style>
